@@ -1,16 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import RideDetails from '../components/RideDetails'; 
 import { rideTransactionsContract } from '../utils/CONSTANTS';
 import { useCustomProvider } from '../hooks/EtherProvider';
+import { useAuthCore, useConnect } from '@particle-network/auth-core-modal';
 
 
 const RideInfoPage = () => {
+  const { connect, disconnect } = useConnect();
   const [rideId, setRideId] = useState('');
   const [showDetails, setShowDetails] = useState(false);
+  const {userInfo} = useAuthCore();
   const {customProvider, smartAccount} = useCustomProvider();
   const contractABI = rideTransactionsContract.abi;
   const contractAddress = rideTransactionsContract.address;
   
+  
+  const [balance, setBalance] = useState(null);
+
+  useEffect(() => {
+    if (userInfo) {
+      fetchBalance();
+    }
+  }, [userInfo, smartAccount, customProvider]);
+
+  const fetchBalance = async () => {
+    const address = await smartAccount.getAddress();
+    const balanceResponse = await customProvider.getBalance(address);
+    setBalance(ethers.utils.formatEther(balanceResponse).toString());
+  };
+
   // debug
   const debug = () => {
     console.log("customProvider: ", customProvider);

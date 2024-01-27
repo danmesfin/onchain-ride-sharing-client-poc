@@ -80,21 +80,24 @@ const App = () => {
   // };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex min-h-screen flex-col ">
       {!userInfo ? (
-        <div className="login-section">
-          <button className="sign-button google-button" onClick={() => handleLogin('google')}>
-            <img src="https://i.imgur.com/nIN9P4A.png" alt="Google" className="icon"/>
-            Sign in with Google
-          </button>
-          <button className="sign-button twitter-button" onClick={() => handleLogin('twitter')}>
-            <img src="https://i.imgur.com/afIaQJC.png" alt="Twitter" className="icon"/>
-            Sign in with X
-          </button>
-          <button className="sign-button other-button" onClick={() => handleLogin('')}>
-            <img src="https://i.imgur.com/VRftF1b.png" alt="Twitter" className="icon"/>
-          </button>
+        <div className='flex min-h-screen flex-col justify-center item-center'>
+          <div className="flex flex-col items-center justify-center">
+            <button className="sign-button google-button flex w-60 items-center justify-center" onClick={() => handleLogin('google')}>
+              <img src="https://i.imgur.com/nIN9P4A.png" alt="Google" className="icon" />
+              Sign in with Google
+            </button>
+            <button className="sign-button twitter-button flex w-60 items-center justify-center" onClick={() => handleLogin('twitter')}>
+              <img src="https://i.imgur.com/afIaQJC.png" alt="Twitter" className="icon" />
+              Sign in with X
+            </button>
+            <button className="sign-button other-button flex w-60 items-center justify-center" onClick={() => handleLogin('')}>
+              <img src="https://i.imgur.com/VRftF1b.png" alt="Twitter" className="icon" />Connect
+            </button>
+          </div>
         </div>
+       
       ) : (
         <>
         <RideInfoPage />

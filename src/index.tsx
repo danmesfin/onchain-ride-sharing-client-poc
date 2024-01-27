@@ -8,8 +8,6 @@ import('buffer').then(({ Buffer }) => {
   window.Buffer = Buffer;
 });
 
-console.log('xo',  import.meta.env.VITE_PARTICLE_PROJECT_ID)
-
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <AuthCoreContextProvider
