@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { Avalanche } from '@particle-network/chains';
+import { Avalanche, AvalancheTestnet } from '@particle-network/chains';
 import { AuthCoreContextProvider } from '@particle-network/auth-core-modal';
 import App from './App'
 
@@ -24,7 +24,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         wallet: {
           visible: true,
           customStyle: {
-              supportChains: [Avalanche],
+              supportChains: [AvalancheTestnet, Avalanche],
           }
         }
       }}
