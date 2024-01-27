@@ -11,14 +11,13 @@ const RideInfoPage = () => {
   const contractABI = rideTransactionsContract.abi;
   const contractAddress = rideTransactionsContract.address;
   
-  // debuging 
+  // debug
   const debug = () => {
     console.log("customProvider: ", customProvider);
     console.log("smartAccount: ", smartAccount);
     const codeExist = customProvider.getCode(contractAddress);
     console.log("code exist", codeExist);
   };
-
   debug();
 
   const handleInputChange = (event) => {
@@ -51,8 +50,7 @@ const RideInfoPage = () => {
           />
           <button type="submit" className='bg-blue-400'>Get Details</button>
         </form>
-      </div>
-      {showDetails && (
+        {showDetails && (
         <RideDetails
           rideId={rideId}
           contractAddress={contractAddress}
@@ -60,6 +58,11 @@ const RideInfoPage = () => {
           customProvider={customProvider}
         />
       )}
+      </div>
+    <div>
+      <h1>Start Ride</h1>
+
+    </div>
     </div>
   );
 };
