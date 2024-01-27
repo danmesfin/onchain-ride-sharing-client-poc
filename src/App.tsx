@@ -1,30 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
 import { useEthereum, useConnect, useAuthCore } from '@particle-network/auth-core-modal';
-import { Avalanche } from '@particle-network/chains';
-import { AAWrapProvider, SendTransactionMode, SmartAccount } from '@particle-network/aa';
+import { Avalanche, AvalancheTestnet } from '@particle-network/chains';
 import { ethers } from 'ethers';
 import { notification } from 'antd';
-
+import { SocialAuthType } from '@particle-network/auth-core';
+import { useCustomProvider } from  './hooks/EtherProvider';
 import './App.css';
+import RideInfoPage from './pages/Dashbaord';
 
 const App = () => {
   const { provider } = useEthereum();
   const { connect, disconnect } = useConnect();
   const { userInfo } = useAuthCore();
+  const {customProvider,  smartAccount} = useCustomProvider()
 
-    const smartAccount = new SmartAccount(provider, {
-      projectId: process.env.VITE_PARTICLE_PROJECT_ID ?? '',
-      clientKey: process.env.VITE_PARTICLE_CLIENT_KEY?? '',
-      appId: process.env.VITE_PARTICLE_APP_ID ?? '',
-      aaOptions: {
-        simple: [{ chainId: Avalanche.id, version: '1.0.0' }]
-      }
-    });
-
-
-
-
-  const customProvider = new ethers.providers.Web3Provider(new AAWrapProvider(smartAccount, SendTransactionMode.Gasless), "any");
   const [balance, setBalance] = useState(null);
 
   useEffect(() => {
@@ -39,60 +32,55 @@ const App = () => {
     setBalance(ethers.utils.formatEther(balanceResponse).toString());
   };
 
-
-  const handleLogin = async (authType) => {
+  const handleLogin = async (authType: SocialAuthType) => {
     if (!userInfo) {
       await connect({
         socialType: authType,
-        chain: Avalanche,
+        chain: AvalancheTestnet,  // testnet will be used only for development - to be replaced by Avalanche
       });
     }
   };
 
-  const executeUserOp = async () => {
-    const signer = customProvider.getSigner();
-    const tx = {
-      to: "0x000000000000000000000000000000000000dEaD",
-      value: ethers.utils.parseEther("0.0001"),
-    };
-    const txResponse = await signer.sendTransaction(tx);
-    const txReceipt = await txResponse.wait();
-    notification.success({
-      message: 'Transaction Successful',
-      description: (
-        <div>
-          Transaction Hash: <a href={`https://snowtrace.io/tx/${txReceipt.transactionHash}`} target="_blank" rel="noopener noreferrer">{txReceipt.transactionHash}</a>
-        </div>
-      )
-    });
-  };
+  // const executeUserOp = async () => {
+  //   const signer = customProvider.getSigner();
+  //   const tx = {
+  //     to: "0x000000000000000000000000000000000000dEaD",
+  //     value: ethers.utils.parseEther("0.0001"),
+  //   };
+  //   const txResponse = await signer.sendTransaction(tx);
+  //   const txReceipt = await txResponse.wait();
+  //   notification.success({
+  //     message: 'Transaction Successful',
+  //     description: (
+  //       <div>
+  //         Transaction Hash: <a href={`https://snowtrace.io/tx/${txReceipt.transactionHash}`} target="_blank" rel="noopener noreferrer">{txReceipt.transactionHash}</a>
+  //       </div>
+  //     )
+  //   });
+  // };
 
-  const executeBatchUserOp = async () => {
-    const tx = { tx: [{
-      to: "0x000000000000000000000000000000000000dEaD",
-      value: ethers.utils.parseEther("0.0001"),
-    },
-    {
-      to: "0x000000000000000000000000000000000000dEaD",
-      value: ethers.utils.parseEther("0.0001"),
-    }]};
-    const txResponse = await smartAccount.sendTransaction(tx);
-    notification.success({
-      message: 'Transaction Successful',
-      description: (
-        <div>
-          Transaction Hash: <a href={`https://snowtrace.io/tx/${txResponse}`} target="_blank" rel="noopener noreferrer">{txResponse}</a>
-        </div>
-      )
-    });
-  };
+  // const executeBatchUserOp = async () => {
+  //   const tx = { tx: [{
+  //     to: "0x000000000000000000000000000000000000dEaD",
+  //     value: ethers.utils.parseEther("0.0001"),
+  //   },
+  //   {
+  //     to: "0x000000000000000000000000000000000000dEaD",
+  //     value: ethers.utils.parseEther("0.0001"),
+  //   }]};
+  //   const txResponse = await smartAccount.sendTransaction(tx);
+  //   notification.success({
+  //     message: 'Transaction Successful',
+  //     description: (
+  //       <div>
+  //         Transaction Hash: <a href={`https://snowtrace.io/tx/${txResponse}`} target="_blank" rel="noopener noreferrer">{txResponse}</a>
+  //       </div>
+  //     )
+  //   });
+  // };
 
   return (
-    <div className="App">
-      <div className="logo-section">
-        <img src="https://i.imgur.com/EerK7MS.png" alt="Logo 1" className="logo logo-big" />
-        <img src="https://i.imgur.com/eBJAx0s.png" alt="Logo 2" className="logo logo-big" />
-      </div>
+    <div className="flex flex-col">
       {!userInfo ? (
         <div className="login-section">
           <button className="sign-button google-button" onClick={() => handleLogin('google')}>
@@ -108,15 +96,9 @@ const App = () => {
           </button>
         </div>
       ) : (
-        <div className="profile-card">
-          <h2>{userInfo.name}</h2>
-          <div className="balance-section">
-            <small>{balance} AVAX</small>
-            <button className="sign-message-button" onClick={executeUserOp}>Execute User Operation</button>
-            <button className="sign-message-button" onClick={executeBatchUserOp}>Execute Batch User Operation</button>
-            <button className="disconnect-button" onClick={disconnect}>Logout</button>
-          </div>
-        </div>
+        <>
+        <RideInfoPage />
+        </>
       )}
     </div>
   );
