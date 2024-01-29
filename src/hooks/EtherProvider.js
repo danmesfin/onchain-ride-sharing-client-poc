@@ -9,9 +9,9 @@ export const useCustomProvider = () => {
   const { provider } = useEthereum();
 
   const smartAccount = new SmartAccount(provider, {
-    projectId: process.env.VITE_PARTICLE_PROJECT_ID ?? '',
-    clientKey: process.env.VITE_PARTICLE_CLIENT_KEY ?? '',
-    appId: process.env.VITE_PARTICLE_APP_ID ?? '',
+    projectId: import.meta.env.VITE_PARTICLE_PROJECT_ID ?? '',
+    clientKey: import.meta.env.VITE_PARTICLE_CLIENT_KEY ?? '',
+    appId: import.meta.env.VITE_PARTICLE_APP_ID ?? '',
     aaOptions: {
       simple: [{ chainId:  AvalancheTestnet.id, version: '1.0.0' }]
     }
