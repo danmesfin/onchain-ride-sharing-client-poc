@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+// import {
+//   createBrowserRouter,
+//   RouterProvider,
+// } from "react-router-dom";
 import { useEthereum, useConnect, useAuthCore } from '@particle-network/auth-core-modal';
 import { Avalanche, AvalancheTestnet } from '@particle-network/chains';
 import { ethers } from 'ethers';
