@@ -1,17 +1,21 @@
 import React, { useState , useEffect} from 'react';
 import RideDetails from '../components/RideDetails'; 
-import { rideTransactionsContract } from '../utils/CONSTANTS';
+import { rideTransactionsContract } from '../utils/RideTransactionABI';
 import { useCustomProvider } from '../hooks/EtherProvider';
 import { useAuthCore, useConnect } from '@particle-network/auth-core-modal';
-
-
+import RequestRide from '../components/RequestRide';
+import { ethers } from 'ethers';
+import StartRide from '../components/StartRide';
+import CompleteRide from '../components/CompleteRide';
+import MapComponent from '../components/Map';
+import ProcessPayment from '../components/ProcessPayment';
 const RideInfoPage = () => {
   const { connect, disconnect } = useConnect();
   const [rideId, setRideId] = useState('');
   const [showDetails, setShowDetails] = useState(false);
   const {userInfo} = useAuthCore();
   const {customProvider, smartAccount} = useCustomProvider();
-  const contractABI = rideTransactionsContract.abi;
+  const rideContractABI = rideTransactionsContract.abi;
   const contractAddress = rideTransactionsContract.address;
   
   
@@ -29,14 +33,6 @@ const RideInfoPage = () => {
     setBalance(ethers.utils.formatEther(balanceResponse).toString());
   };
 
-  // debug
-  const debug = () => {
-    console.log("customProvider: ", customProvider);
-    console.log("smartAccount: ", smartAccount);
-    const codeExist = customProvider.getCode(contractAddress);
-    console.log("code exist", codeExist);
-  };
-  debug();
 
   const handleInputChange = (event) => {
     setRideId(event.target.value);
@@ -55,32 +51,33 @@ const RideInfoPage = () => {
         <p className='mx-2'>{balance} AVAX</p>
         <button className="rounded-lg bg-blue-500 px-3 py-1 text-md" onClick={disconnect}>Logout</button>
       </div>
-      <div>
-        <h1>Get Ride Details</h1>
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="rideId">Ride ID:</label>
-          <input
-            type="text"
-            id="rideId"
-            value={rideId}
-            onChange={handleInputChange}
-            placeholder="Enter Ride ID"
-          />
-          <button type="submit" className='bg-blue-400'>Get Details</button>
-        </form>
-        {showDetails && (
+      <MapComponent />
+      <div className='flex w-full p-10 mt-8'>
+      <div className='w-full items-center mx-3'>
         <RideDetails
-          rideId={rideId}
-          contractAddress={contractAddress}
-          contractABI={contractABI}
+          contractAddress={rideTransactionsContract.address}
+          contractABI={rideTransactionsContract.abi}
           customProvider={customProvider}
         />
-      )}
-      </div>
-    <div>
-      <h1>Start Ride</h1>
+        </div>
 
-    </div>
+        <div className='w-full items-center mx-3'>
+          <RequestRide
+            contractAddress={rideTransactionsContract.address}
+            contractABI={rideTransactionsContract.abi}
+            customProvider={customProvider}
+          />
+        </div>
+        <div className='flex flex-col items-center mx-3'>
+          <StartRide contractAddress={rideTransactionsContract.address} contractABI={rideTransactionsContract.abi} customProvider={customProvider} />
+        </div>
+        <div className='flex flex-col items-center mx-3'>
+          <CompleteRide contractAddress={rideTransactionsContract.address} contractABI={rideTransactionsContract.abi} customProvider={customProvider} />
+        </div>
+      </div>
+      <div className='flex w-full p-10 mt-4'>
+        <ProcessPayment contractAddress={rideTransactionsContract.address} contractABI={rideTransactionsContract.abi} customProvider={customProvider} />
+      </div>
     </div>
   );
 };
