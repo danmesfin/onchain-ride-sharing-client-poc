@@ -8,7 +8,7 @@ type GeoJsonPoint = {
   type: 'Feature';
   geometry: {
     type: 'Point';
-    coordinates: [number, number]; // [longitude, latitude]
+    coordinates: [number, number]; 
   };
   properties: {
     id: string;
@@ -20,44 +20,6 @@ type GeoJsonFeatureCollection = {
   type: 'FeatureCollection';
   features: GeoJsonPoint[];
 };
-const mockGeoJsonData: GeoJsonFeatureCollection = {
-  type: 'FeatureCollection',
-  features: [
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: [38.7443, 9.040257] // San Francisco
-      },
-      properties: {
-        id: 'warehouse1',
-        name: 'Warehouse 1'
-      }
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: [38.7443, 9.062257] // San Francisco
-      },
-      properties: {
-        id: 'warehouse1',
-        name: 'Warehouse 1'
-      }
-    },
-    {
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: [38.7643, 9.050257] // Second Location
-      },
-      properties: {
-        id: 'warehouse2',
-        name: 'Warehouse 2'
-      }
-    },
-  ]
-};
 
 
 
@@ -68,23 +30,6 @@ const MapComponent = () => {
     zoom: 1,
   });
   const [size, setSize] = useState(50);
-  // State for tracking the current step
-  const [currentStep, setCurrentStep] = useState(1);
-
-  // Other states (selectedLocation, size, etc.) go here...
-
-  // Handlers for each step
-  const handleLocationNext = () => {
-    setCurrentStep(2); // Proceed to size selection
-  };
-
-  const handleSizeNext = () => {
-    setCurrentStep(3); // Proceed to final confirmation
-  };
-
-  const handleFinalSubmit = () => {
-    // Handle the final submission logic here
-  };
 
   const handleSliderChange = (event: any) => {
     setSize(event.target.value);
@@ -133,59 +78,7 @@ const MapComponent = () => {
 
   return (
     <div className='flex min-h-screen'>
-      <div className='w-1/3 bg-gray-100 flex flex-col justify-center items-center'>
-        {currentStep === 1 && (
-          <>
-            <span className='mx-auto font-semibold mt-8 text-xl'>Select property location</span>
-            <button onClick={fetchCurrentLocation} className='mt-4 bg-blue-500 text-white p-2 rounded'>Use Current Location</button>
-
-            <div className='card flex mt-8'>
-              <div className='flex flex-col rounded-lg border border-gray-300 p-2'>
-                {selectedLocation ? (
-                  <>
-                    <span className='mt-2 font-bold'>Selected proprty location</span>
-                    <span className='mt-3 text-gray-700'>Latitude: {selectedLocation.latitude.toFixed(5)}</span>
-                    <span className='mt-3 text-gray-700'>Longitude: {selectedLocation.longitude.toFixed(5)}</span>
-                    <button onClick={handleLocationNext} className='rounded-lg w-full mt-2 py-2 border bg-green-500 text-sm'>Next</button>
-                  </>
-                ) : (
-                  <span className='mt-3 text-gray-700'>Click on the map to select a location</span>
-                )}
-              </div>
-            </div>
-          </>
-        )}
-
-        {currentStep === 2 && (<div className='card mt-8 p-4 border border-gray-300 rounded-lg'>
-          <div className='text-lg font-semibold mb-2'>Select Product Size</div>
-          <div className='flex items-center'>
-            <input
-              type="range"
-              min="1"
-              max="100"
-              value={size}
-              onChange={handleSliderChange}
-              className='w-full text-blue-700 bg-blue-600'
-            />
-            <div className='text-center'>{size}</div>
-            <select className='ml-2'>
-              <option value="kg"> Kg</option>
-              <option value="crate">Crate</option>
-            </select>
-          </div>
-          <button onClick={handleSizeNext} className='rounded-lg w-full mt-2 py-2 border bg-green-500 text-sm'>Next</button>
-        </div>)}
-
-        {currentStep === 3 && (
-          <div className='card mt-8 p-4 border border-gray-300 rounded-lg'>
-            <div className='text-md font-semibold mb-2'>Confirm your reservation</div>
-            <div className='flex items-center'>
-            </div>
-            <button onClick={handleFinalSubmit} className='rounded-lg w-full mt-2 py-2 border bg-green-500 text-sm'>Submit Reservation</button>
-            <button onClick={() => setCurrentStep(1)} className='rounded-lg w-full mt-2 py-2 border bg-green-500 text-sm'>Start Over</button>
-          </div>)}
-      </div>
-      <div className='w-2/3'>
+      <div className='w-full'>
         <Map
           mapLib={import('mapbox-gl')}
           initialViewState={{
